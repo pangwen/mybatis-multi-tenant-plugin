@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC ""
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pangw.mapper.TenantDataMapper">
+
+    <resultMap id="BaseResultMap" type="com.pangw.pojo.TenantData">
+        <id property="id" column="id" javaType="Long" jdbcType="BIGINT"/>
+        <result property="tid" column="tid" javaType="Long" jdbcType="BIGINT"/>
+        <result property="somedata" column="some_text" javaType="String" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" javaType="Date" jdbcType="DATE"/>
+        <result property="updateTime" column="update_time" />
+    </resultMap>
+
+    <sql id="base_column">
+        id, tid, some_text , create_time, update_time
+    </sql>
+
+    <sql id="insert_columns">
+        tid, some_text
+    </sql>
+
+    <insert id="insert" parameterType="com.pangw.pojo.TenantData">
+        insert into tenant_data (<include refid="insert_columns"/>)
+        values (#{tid}, #{somedata})
+    </insert>
+
+    <update id="update" parameterType="com.pangw.pojo.TenantData">
+        update tenant_data set some_text = #{somedata} where id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="Long">
+        delete from tenant_data where id = #{id}
+    </delete>
+
+    <select id="list" resultMap="BaseResultMap">
+        select <include refid="base_column"/> from tenant_data
+    </select>
+
+    <select id="listByData" resultMap="BaseResultMap">
+        <bind name="textLike" value=" text + '%'"/>
+        select <include refid="base_column"/> from tenant_data t
+        where some_text in (select some_text from tenant_data where some_text like #{textLike})
+    </select>
+</mapper>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!-- 数据源配置文件 -->
+    <properties resource="db.properties"/>
+
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <setting name="logImpl" value="SLF4J"/>
+    </settings>
+
+    <plugins>
+        <plugin interceptor="com.pangw.interceptor.TenantInterceptor" >
+            <!-- ignore tenant mapper -->
+            <property name="ignoredMappers" value="com.pangw.mapper.TenantMapper"/>
+            <!-- config tenant id column -->
+            <property name="tenantColumnName" value="tid"/>
+        </plugin>
+
+    </plugins>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="UNPOOLED">
+                <property name="driver" value="${db.driver}"/>
+                <property name="url" value="${db.url}"/>
+                <property name="username" value="${db.user}"/>
+                <property name="password" value="${db.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <mapper resource="mapper/TenantMapper.xml"/>
+        <mapper resource="mapper/TenantDataMapper.xml"/>
+    </mappers>
+</configuration>
